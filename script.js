@@ -98,7 +98,6 @@ if (group == "Elite") {
 } else if (group == "Solo") {
     monster["HP"] *= 4
 }
-
 monster["Level"] = level
 monster["Role"] = role
 monster["Group"] = group
@@ -106,9 +105,11 @@ if (group != "Minion") {
     monster["Multi-Dam"] = monster["Dam"]*multi_attack_mod["Dam"]
     monster["Multi-Atk"] = monster["Atk"] + multi_attack_mod["Atk"]
     monster["Limited-Dam"] = monster["Dam"]*limited_mod["Dam"]
+    monster["Bld"] = monster["HP"] / 2
 } else {
-    let element = document.getElementById("Non-Minion")
-    element.innerHTML = ""
+    document.getElementById("Non-Minion-Bld").innerHTML = ""
+    document.getElementById("Non-Minion-Multi").innerHTML = ""
+    document.getElementById("Bld").innerHTML = ""
 }
 console.log(monster)
 
