@@ -56,6 +56,7 @@ const limited_mod = {
 const queryParams = new URLSearchParams(window.location.search)
 let level = Number(queryParams.get("level")) || 1
 let role = queryParams.get("role") || "Soldier"
+let group = queryParams.get("group") || "Standard"
 const role_mods = {
     "Soldier": soldier_mod,
     "Brute": brute_mod,
@@ -68,26 +69,47 @@ const role_mods = {
 let monster = base_monster
 let role_mod = role_mods[role]
 for (let key in monster) {
-    if (key == "HP") {
-        monster[key] = role_mod[key] + role_mod[key + "_per_level"] * (level)
+    if (group == "Minion") {
+        if (key == "HP") {
+            monster[key] = 1
+        } else if (key == "Dam") {
+            monster[key] = 4 + 0.5 * (level)
+        } else {
+            monster[key] += per_level[key] * (level)
+        }
     } else {
-        monster[key] += per_level[key] * (level)
-        if (role_mod[key]) {
-            if (key == "Dam") {
-                monster[key] *= role_mod[key]
-            } else {
-                monster[key] += role_mod[key]
+        if (key == "HP") {
+            monster[key] = role_mod[key] + role_mod[key + "_per_level"] * (level)
+        } else {
+            monster[key] += per_level[key] * (level)
+            if (role_mod[key]) {
+                if (key == "Dam") {
+                    monster[key] *= role_mod[key]
+                } else {
+                    monster[key] += role_mod[key]
+                }
             }
         }
     }
 }
+
+if (group == "Elite") {
+    monster["HP"] *= 2
+} else if (group == "Solo") {
+    monster["HP"] *= 4
+}
+
 monster["Level"] = level
 monster["Role"] = role
-monster["Multi-Dam"] = monster["Dam"]*multi_attack_mod["Dam"]
-monster["Multi-Atk"] = monster["Atk"] + multi_attack_mod["Atk"]
-monster["Limited-Dam"] = monster["Dam"]*limited_mod["Dam"]
-console.log(`Level: ${level}`)
-console.log(`Role: ${role}`)
+monster["Group"] = group
+if (group != "Minion") {
+    monster["Multi-Dam"] = monster["Dam"]*multi_attack_mod["Dam"]
+    monster["Multi-Atk"] = monster["Atk"] + multi_attack_mod["Atk"]
+    monster["Limited-Dam"] = monster["Dam"]*limited_mod["Dam"]
+} else {
+    let element = document.getElementById("Non-Minion")
+    element.innerHTML = ""
+}
 console.log(monster)
 
 for (let key in monster) {
@@ -95,4 +117,7 @@ for (let key in monster) {
     if (element) {
         element.innerText += String(monster[key])
     }
+}
+if (group == "Minion") {
+    document.getElementById("Dam").innerText += " (no roll)"
 }
