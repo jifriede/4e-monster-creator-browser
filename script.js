@@ -122,3 +122,72 @@ for (let key in monster) {
 if (group == "Minion") {
     document.getElementById("Dam").innerText += " (no roll)"
 }
+
+inner_HTML_role_info ={
+    Artillery: `
+    <p>    
+        Ranged damage and area of effect attacks. They need allies to draw off attacks. Consider the following powers:<br>    
+        - Area burst for damage<br>    
+        - Slow or daze a target<br>    
+        - Step away from a target in melee
+    </p>`,
+    Brute: `
+    <p>
+        Specialize in melee attacks. They don't move around a lot. Consider the following powers:<br>
+        - Deal extra damage when targeting a creature under certain conditions<br>
+        - Make the target grant combat advantage<br>
+        - Make the target vulnerable to a certain damage type
+    </p>`,
+    Controller: `
+    <p>
+        Just behind the front line, capable in melee. Good at short range in combat. Consider the following powers:<br>
+        - Slide target<br>
+        - Create zone on battlefield<br>
+        - Invoke condition
+    </p>`,
+    Elite: `
+    <p>
+        Tougher and more of a threat than standards.<br>
+        - 1 Action Point<br>
+        - +2 on saves
+    </p>`,
+    Lurker: `
+    <p>
+        Abilities to avoid attacks. Often a big attack and defense every few rounds. Consider the following powers:<br>
+        - Stealth with cover/concealment (instead of superior cover or total concealment)<br>
+        - Benefit from invisibility (stealth)<br>
+        - Gain combat advantage
+    </p>`,
+    Minion: `
+    <p>
+        Shock troops and cannon fodder. Use them as melee combatants placed between PCs and back-rank artillery or controllers.<br>
+        - Make target grant combat advantage<br>
+        - Penalty for moving/ignoring
+    </p>`,
+    Skirmisher: `
+    <p>
+        Use mobility to threaten PCs. Move to attack from sides and rear. Consider the following powers:<br>
+        - Shift before/after attacks<br>
+        - Benefit from moving
+    </p>`,
+    Soldier: `
+    <p>
+        Draw PC attacks and defend other monsters. Hinder PC movement. Consider the following powers:<br>
+        - Mark target<br>
+        - Grant restrain or immobilize<br>
+        - Opportunity actions (move/attack)
+    </p>`,
+    Solo: `
+    <p>
+        While solos can lean toward certain roles, they never completely take on a role.<br>
+        - 2 Action Points<br>
+        - +5 on saves<br>
+        - Needs a way to remove conditions
+    </p>`,
+}
+
+role_info = document.getElementById("RoleInfo")
+role_info.innerHTML = inner_HTML_role_info[role]
+if (group != "Standard") {
+    role_info.innerHTML += inner_HTML_role_info[group]
+}
