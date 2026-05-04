@@ -73,7 +73,7 @@ for (let key in monster) {
         if (key == "HP") {
             monster[key] = 1
         } else if (key == "Dam") {
-            monster[key] = 4 + 0.5 * (level)
+            monster[key] = Math.round(4 + 0.5 * (level))
         } else {
             monster[key] += per_level[key] * (level)
         }
@@ -93,6 +93,8 @@ for (let key in monster) {
     }
 }
 
+monster["Dam"] = Math.round(monster["Dam"])
+
 if (group == "Elite") {
     monster["HP"] *= 2
 } else if (group == "Solo") {
@@ -102,10 +104,10 @@ monster["Level"] = level
 monster["Role"] = role
 monster["Group"] = group
 if (group != "Minion") {
-    monster["Multi-Dam"] = monster["Dam"]*multi_attack_mod["Dam"]
+    monster["Multi-Dam"] = Math.round(monster["Dam"]*multi_attack_mod["Dam"])
     monster["Multi-Atk"] = monster["Atk"] + multi_attack_mod["Atk"]
-    monster["Limited-Dam"] = monster["Dam"]*limited_mod["Dam"]
-    monster["Bld"] = monster["HP"] / 2
+    monster["Limited-Dam"] = Math.round(monster["Dam"]*limited_mod["Dam"])
+    monster["Bld"] = Math.floor(monster["HP"] / 2)
 } else {
     document.getElementById("Non-Minion-Bld").innerHTML = ""
     document.getElementById("Non-Minion-Multi").innerHTML = ""
@@ -191,3 +193,24 @@ role_info.innerHTML = inner_HTML_role_info[role]
 if (group != "Standard") {
     role_info.innerHTML += inner_HTML_role_info[group]
 }
+
+function determine_dice(damage, level){
+    let mod = level/2 + 3
+    let total_damage = Math.round(damage)
+    let dice_damage = total_damage - mod
+    let list_of_dice = []
+    const dice_sizes = [6, 8, 10, 12]
+    for (let num_dice = 1; num_dice <= 10; num_dice++) {
+        for (let size of dice_sizes) {
+            temp_dice_damage = Math.round(num_dice * (size + 1) / 2)
+            if (Math.abs(temp_dice_damage - dice_damage) < 2) {
+                list_of_dice.push(`${num_dice}d${size}+${total_damage - temp_dice_damage}`)
+            }
+        }
+    }
+    return list_of_dice
+}
+
+document.getElementById("DamTooltip").innerHTML = `${determine_dice(monster["Dam"], monster["Level"]).join("; ")}`
+document.getElementById("MultiDamTooltip").innerHTML = `${determine_dice(monster["Multi-Dam"], monster["Level"]).join("; ")}`
+document.getElementById("LimitedDamTooltip").innerHTML = `${determine_dice(monster["Limited-Dam"], monster["Level"]).join("; ")}`
